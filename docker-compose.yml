@@ -1,6 +1,13 @@
 version : '3.7'
 
 services:
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - private
+    ports:
+      - "6379:6379"
   web:
     image: nginx
     volumes:
@@ -23,11 +30,14 @@ services:
       - db-pass
       - db-user
     environment:
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis
       - DB_HOST=db
       - DB_PASS=/run/secrets/db-pass
       - DB_USER=/run/secrets/db-user
     depends_on:
       - db
+      - redis
     networks:
       - private
       - public
