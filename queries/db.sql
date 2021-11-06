@@ -1,0 +1,10 @@
+CREATE DATABASE weather;
+
+USE weather;
+
+CREATE TABLE local_weather(
+  id INT NOT NULL AUTO_INCREMENT,
+  value VARCHAR(100) NOT NULL,
+  city VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id)
+); 
