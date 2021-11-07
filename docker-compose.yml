@@ -1,13 +1,6 @@
 version : '3.7'
 
 services:
-  redis:
-    image: redis:alpine
-    restart: always
-    networks:
-      - private
-    ports:
-      - "6379:6379"
   web:
     image: nginx
     volumes:
@@ -19,17 +12,33 @@ services:
     networks:
       - public
 
-  backend:
-    image: alpine  
+  rabbit:
+    image: rabbitmq
+    networks:
+      - private
+    ports:
+      - "5672:5672"
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks:
+      - private
+    ports:
+      - "6379:6379"
+
+  gateway:
+    image: node
     command: sh -c "/code/build.sh"
     volumes:
-      - ./:/code
+      - ./gateway:/code
     ports:
       - 8080:8080
     secrets:
       - db-pass
       - db-user
     environment:
+      - AMQP_HOST=rabbit
       - REDIS_PORT=6379
       - REDIS_HOST=redis
       - DB_HOST=db
@@ -38,6 +47,7 @@ services:
     depends_on:
       - db
       - redis
+      - rabbit
     networks:
       - private
       - public
@@ -55,7 +65,7 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-pass
     volumes:
-      - ./queries:/docker-entrypoint-initdb.d
+      - ./gateway/queries:/docker-entrypoint-initdb.d
     networks:
       - private
 

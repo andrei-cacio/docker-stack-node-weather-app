@@ -4,6 +4,6 @@ server {
   server_name localhost;
 
   location /city/ {
-      proxy_pass http://backend:8080/city/;
+      proxy_pass http://gateway:8080/city/;
   }
 }
