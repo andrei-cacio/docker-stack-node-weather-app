@@ -6,7 +6,7 @@ let clientRef = null;
 
 
 const ttl = {
-  SHORT: 60,
+  SHORT: 10,
   LONG: 60 * 60
 }
 
